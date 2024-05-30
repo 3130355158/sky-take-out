@@ -12,6 +12,7 @@ import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.EmployeeLoginVO;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -73,17 +74,36 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public Result save(@RequestBody EmployeeDTO employeeDTO){
-        log.info("新增员工:{}",employeeDTO);
+    public Result save(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("新增员工:{}", employeeDTO);
         employeeService.save(employeeDTO);
         return Result.success();
     }
 
     @GetMapping("/page")
-    public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO){
-        log.info("员工分页查询:参数:{}",employeePageQueryDTO);
+    public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO) {
+        log.info("员工分页查询:参数:{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }
 
+    @PostMapping("/status/{status}")
+    public Result startOrStop(@PathVariable Integer status,Long id) {
+        log.info("启用禁用员工账号:{},{}",status,id);
+        employeeService.startOrStop(status,id);
+        return Result.success();
+    }
+
+    @GetMapping("/{id}")
+    public Result<Employee> getById(@PathVariable Long id){
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    @PutMapping
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+        log.info("编辑员工信息:{}",employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
 }
